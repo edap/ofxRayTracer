@@ -19,3 +19,17 @@ void ofxRTMeshHelper::readModelAndGetPrimitives(ofxAssimpModelLoader& model,
     };
 }
 
+void ofxRTMeshHelper::getPrimitivesAndMaterials(ofxAssimpModelLoader& model,
+                                                  vector<of3dPrimitive>& primitives,
+                                                  vector<ofMaterial>& materials,
+                                                  ofNode& parentNode){
+    for (int i = 0; i< model.getMeshCount(); i++) {
+        auto primitive = ofxRTMeshHelper::toPrimitive(model.getMesh(i));
+        primitive.setParent(parentNode);
+        primitives.push_back(primitive);
+
+        auto material = model.getMaterialForMesh(i);
+        materials.push_back(material);
+    };
+}
+

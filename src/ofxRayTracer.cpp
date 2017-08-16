@@ -1,7 +1,8 @@
 #include "ofxRayTracer.h"
 
-ofxRayTracer::ofxRayTracer(const vector<of3dPrimitive>& _primitives, const vector<ofLight>& _lights){
+ofxRayTracer::ofxRayTracer(const vector<of3dPrimitive>& _primitives, const vector<ofMaterial>& _materials, const vector<ofLight>& _lights){
     primitives = _primitives;
+    materials = _materials;
     lights = _lights;
 };
 
@@ -84,7 +85,7 @@ shared_ptr<ofxRTSurfel> ofxRayTracer::findFirstIntersectionWithThePrimitives(con
             if (intersection) {
                 if (baricenter.z < distanceToTheClosestSurface) {
                     found = true;
-                    if(face.hasColors()) {
+                    if (face.hasColors()) {
                         color = face.getColor(1);
                     } else {
                         color = ofFloatColor(1.f,1.f,1.f);

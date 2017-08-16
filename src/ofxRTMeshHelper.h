@@ -12,4 +12,8 @@ public:
     static void readModelAndGetPrimitives(ofxAssimpModelLoader& model,
                                                 vector<of3dPrimitive>& primitives,
                                                 ofNode& parentNode);
+    static void getPrimitivesAndMaterials(ofxAssimpModelLoader& model,
+                                          vector<of3dPrimitive>& primitives,
+                                          vector<ofMaterial>& materials,
+                                          ofNode& parentNode);
 };

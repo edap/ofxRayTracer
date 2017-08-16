@@ -15,7 +15,7 @@ class ofxRayTracer {
 public:
     // when you will pass a model from assimp,
     // remember this: https://github.com/openframeworks/openFrameworks/issues/2989
-    ofxRayTracer(const vector<of3dPrimitive>& primitives, const vector<ofLight>& lights);
+    ofxRayTracer(const vector<of3dPrimitive>& primitives, const vector<ofMaterial>& materials,const vector<ofLight>& lights);
     //iterates overall pixels calling traceRay
     void traceImage(const ofxRTPinholeCamera& camera, shared_ptr<ofImage>& image) const;
 protected:
@@ -31,5 +31,6 @@ protected:
     bool visible(const glm::vec3& surfelPos, const glm::vec3& wi, const float& distanceToLight) const;
     ofFloatColor L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surfelX,const glm::vec3 wo) const;
     vector<of3dPrimitive> primitives;
+    vector<ofMaterial> materials;
 
 };

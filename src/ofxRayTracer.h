@@ -20,8 +20,10 @@ public:
     void traceImage(const ofxRTPinholeCamera& camera, shared_ptr<ofImage>& image) const;
 protected:
     vector<ofLight> lights;
+    vector<of3dPrimitive> primitives;
+    vector<ofMaterial> materials;
+
     shared_ptr<ofxRTSurfel> findFirstIntersectionWithThePrimitives(const ofxRTRay& ray) const;
-    // 
     ofColor L_i(const ofxRTRay& ray) const;
     // Find the first intersection with the scene
     bool rayTriangleIntersect(const glm::vec3& P, const glm::vec3& w, const vector<glm::vec3> v, float baricenter[3], float& t) const;
@@ -30,7 +32,6 @@ protected:
     ofColor L_0(const shared_ptr<ofxRTSurfel>& surfelY, const glm::vec3 ray_direction_inverted) const;
     bool visible(const glm::vec3& surfelPos, const glm::vec3& wi, const float& distanceToLight) const;
     ofFloatColor L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surfelX,const glm::vec3 wo) const;
-    vector<of3dPrimitive> primitives;
-    vector<ofMaterial> materials;
 
+    ofFloatColor getColor(const ofMeshFace& face, int indexMeshes) const;
 };

@@ -34,35 +34,21 @@ from the book: The first one is easy: iterate over the lights and multiply three
 ofColor ofxRayTracer::L_i(const ofxRTRay& ray) const{
     // for all the triangles in a mesh
     // Find the first intersection (and the closest!) with the scene
-
-
     const shared_ptr<ofxRTSurfel>& surfelY = findFirstIntersectionWithThePrimitives(ray);
     if (surfelY) {
         return L_0(surfelY, -ray.direction);
     } else {
         return ofColor(0,0,0);
     }
-
-
-
-//    for(of3dPrimitive primitive : primitives){
-//        const shared_ptr<Surfel>& surfelY = findFirstIntersection(ray, primitive.getMesh(), primitive.getGlobalTransformMatrix());
-//
-//        //if (notNull(s)) TODO, if a ray is found, create a Surfel
-//        if (surfelY) {
-//            return L_0(surfelY, -ray.direction);
-//        } else {
-//            return ofColor(0,0,0);
-//        }
-//    }
 }
 
-// This method find the first intersection between a ray and a mesh.
+// This method find the first intersection between a ray and a collection of meshes.
 // If an intersection is founded, it returns a surfel, otherwise null.
 shared_ptr<ofxRTSurfel> ofxRayTracer::findFirstIntersectionWithThePrimitives(const ofxRTRay& ray) const{
     // at the beginning, no intersection is found and the distance to the closest surface
     // is set to an high value;
     bool found = false;
+    int meshesIndex = 0;
     float distanceToTheClosestSurface = numeric_limits<float>::max();
     glm::vec3 faceNormal;
     glm::vec3 position;
@@ -85,11 +71,7 @@ shared_ptr<ofxRTSurfel> ofxRayTracer::findFirstIntersectionWithThePrimitives(con
             if (intersection) {
                 if (baricenter.z < distanceToTheClosestSurface) {
                     found = true;
-                    if (face.hasColors()) {
-                        color = face.getColor(1);
-                    } else {
-                        color = ofFloatColor(1.f,1.f,1.f);
-                    };
+                    color = getColor(face, meshesIndex);
                     distanceToTheClosestSurface = baricenter.z;
                     faceNormal = face.getFaceNormal();
                     position = getPointOnTriangle(ray, baricenter);
@@ -97,6 +79,7 @@ shared_ptr<ofxRTSurfel> ofxRayTracer::findFirstIntersectionWithThePrimitives(con
                 }
             }
         }
+        meshesIndex++;
     }
 
     if (found) {
@@ -135,7 +118,7 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
             glm::vec3 color = surfelX->getColor();
             // light power is not implemented in ofLight,
             // I use a getDiffuseColor().getBrightness() for this
-            float lightPower = lights[i].getDiffuseColor().getBrightness() * 10;
+            float lightPower = lights[i].getDiffuseColor().getBrightness() * 30;
             float biradiance = lightPower / (4 * PI * sqrt(distanceToLight));
 
             //lambertian light
@@ -198,4 +181,15 @@ bool ofxRayTracer::visible(const glm::vec3& P, const glm::vec3& direction, const
 glm::vec3 ofxRayTracer::getPointOnTriangle(const ofxRTRay& _ray, const glm::vec3& _baryPosition) const {
     return _ray.origin + (_ray.direction * _baryPosition.z);
 };
+
+ofFloatColor ofxRayTracer::getColor(const ofMeshFace &face, int indexMeshes) const {
+    // vertex colors has precedence over material color
+    if (face.hasColors()) {
+        return face.getColor(1);
+    } else if(materials.size() >= (indexMeshes+1) ) {
+        return materials.at(indexMeshes).getDiffuseColor();
+    } else {
+        return ofFloatColor(1.f,1.f,1.f);
+    };
+}
 

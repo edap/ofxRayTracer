@@ -41,5 +41,6 @@ Have a look at the `example-cornellbox` app
 
 TODO:
 
-- [ ] colors
+- [x] colors
 - [ ] indirect rays
+

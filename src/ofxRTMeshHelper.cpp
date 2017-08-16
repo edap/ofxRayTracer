@@ -9,7 +9,7 @@ of3dPrimitive ofxRTMeshHelper::toPrimitive(const ofMesh& mesh) {
     return primitive;
 }
 
-void ofxRTMeshHelper::readModelAndGetPrimitives(ofxAssimpModelLoader& model,
+void ofxRTMeshHelper::getPrimitives(ofxAssimpModelLoader& model,
                                                vector<of3dPrimitive>& primitives,
                                                ofNode& parentNode){
     for (int i = 0; i< model.getMeshCount(); i++) {

@@ -8,7 +8,7 @@ ofxRTSurfel::ofxRTSurfel(const glm::vec3& _faceNormal, const glm::vec3& _rayDire
     if(glm::dot(_faceNormal, _rayDirection) >= 0){
         backface = true;
     }
-    color = glm::vec3(_color.r,_color.g,_color.b); //for now, all the surfaces are white. TODO, pass the color when initializing the Surfel
+    color = glm::vec3(_color.r,_color.g,_color.b);
 
 }
 

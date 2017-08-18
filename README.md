@@ -1,9 +1,14 @@
 # ofxRayTracer
 A Ray Tracer in openFrameworks, work in progress
 
+![current](img/current.jpg)
+
+As I've said WIP ;)
+
 This ray tracer implementation was written as exercise for this [online course](http://graphicscodex.com/projects/rays/index.html), course prepared by prof. Morgan McGuire
 
-It is still incomplete and it is intended for personal use, WIP. But if you want to try it out, that's how you set up a scene, loading the model and you putting the meshes in a `vector<Primitives>`
+
+It is still incomplete and it is intended for personal use, WIP. It provide a way to load an `.obj` file through the `ofxAssimpModelLoader` and render it. If you want to try it out, that's how you set up a scene, loading the model and you putting the meshes in a `vector<Primitives>`
 
 ```cpp
 shared_ptr<ofImage> image;
@@ -42,5 +47,6 @@ Have a look at the `example-cornellbox` app
 TODO:
 
 - [x] colors
+- [ ] multithread
 - [ ] indirect rays
 

@@ -22,6 +22,7 @@ protected:
     vector<ofLight> lights;
     vector<of3dPrimitive> primitives;
     vector<ofMaterial> materials;
+    uint64_t renderTimeInMilliseconds;
 
     shared_ptr<ofxRTSurfel> findFirstIntersectionWithThePrimitives(const ofxRTRay& ray) const;
     ofColor L_i(const ofxRTRay& ray) const;
@@ -34,4 +35,6 @@ protected:
     ofFloatColor L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surfelX,const glm::vec3 wo) const;
 
     ofFloatColor getColor(const ofMeshFace& face, int indexMeshes) const;
+    void displayTime(uint64_t ellapsed) const;
+
 };

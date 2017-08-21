@@ -12,16 +12,28 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, shared_ptr<ofIma
     const int width = int(image->getWidth());
     const int height = int(image->getHeight());
 
+    ofPixels renderPixels;
+    renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
+
+
+    auto startAtTime = ofGetElapsedTimeMillis();
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             glm::vec3 P;
             glm::vec3 w;
             // Find the ray through (x, y) and the center of projection
             camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
-            image->setColor(x, y, L_i(ofxRTRay(P, w)));
+            renderPixels.setColor(x, y, L_i(ofxRTRay(P, w)));
         }
     }
-    image->update();
+
+    image->setFromPixels(renderPixels);
+    displayTime(ofGetElapsedTimeMillis() - startAtTime);
+}
+
+void ofxRayTracer::displayTime(uint64_t ellapsed) const {
+    auto str = "ofxRayTracer: render time: " + ofToString(ellapsed/1000.0) + " seconds";
+    cout << str << endl;
 }
 
 // Debugging implementation that computes white if there is any surface on this ray and black when there is not.

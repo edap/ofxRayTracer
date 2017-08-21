@@ -1,6 +1,8 @@
 #include "ofxRayTracer.h"
+ofxRayTracer::ofxRayTracer(){};
 
-ofxRayTracer::ofxRayTracer(const vector<of3dPrimitive>& _primitives, const vector<ofMaterial>& _materials, const vector<ofLight>& _lights){
+
+void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<ofMaterial>& _materials, const vector<ofLight>& _lights){
     primitives = _primitives;
     materials = _materials;
     lights = _lights;
@@ -8,13 +10,12 @@ ofxRayTracer::ofxRayTracer(const vector<of3dPrimitive>& _primitives, const vecto
 
 // C++ Ray Casting implementation following http://graphicscodex.com
 
-void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, shared_ptr<ofImage>& image) const{
-    const int width = int(image->getWidth());
-    const int height = int(image->getHeight());
+void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image){
+    const int width = int(rectangle.getWidth());
+    const int height = int(rectangle.getHeight());
 
     ofPixels renderPixels;
     renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
-
 
     auto startAtTime = ofGetElapsedTimeMillis();
     for (int y = 0; y < height; ++y) {
@@ -29,11 +30,6 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, shared_ptr<ofIma
 
     image->setFromPixels(renderPixels);
     displayTime(ofGetElapsedTimeMillis() - startAtTime);
-}
-
-void ofxRayTracer::displayTime(uint64_t ellapsed) const {
-    auto str = "ofxRayTracer: render time: " + ofToString(ellapsed/1000.0) + " seconds";
-    cout << str << endl;
 }
 
 // Debugging implementation that computes white if there is any surface on this ray and black when there is not.
@@ -204,4 +200,12 @@ ofFloatColor ofxRayTracer::getColor(const ofMeshFace &face, int indexMeshes) con
         return ofFloatColor(1.f,1.f,1.f);
     };
 }
+
+// TODO, move these method in an utility class
+void ofxRayTracer::displayTime(uint64_t ellapsed) const {
+    auto str = "ofxRayTracer: render time: " + ofToString(ellapsed/1000.0) + " seconds";
+    cout << str << endl;
+}
+
+
 

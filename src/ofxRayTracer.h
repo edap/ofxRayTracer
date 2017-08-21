@@ -13,11 +13,12 @@
 
 class ofxRayTracer {
 public:
+    ofxRayTracer();
     // when you will pass a model from assimp,
     // remember this: https://github.com/openframeworks/openFrameworks/issues/2989
-    ofxRayTracer(const vector<of3dPrimitive>& primitives, const vector<ofMaterial>& materials,const vector<ofLight>& lights);
+    void setup(const vector<of3dPrimitive>& primitives, const vector<ofMaterial>& materials,const vector<ofLight>& lights);
     //iterates overall pixels calling traceRay
-    void traceImage(const ofxRTPinholeCamera& camera, shared_ptr<ofImage>& image) const;
+    void traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image);
 protected:
     vector<ofLight> lights;
     vector<of3dPrimitive> primitives;

@@ -10,25 +10,39 @@ void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<
 
 // C++ Ray Casting implementation following http://graphicscodex.com
 
+void ofxRayTracer::parallelFor( ofxRTPinholeCamera& camera, ofRectangle& rectangle )
+{
+    //tbb::parallel_for(camera, rectangle);
+}
+
+
 void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image){
     const int width = int(rectangle.getWidth());
     const int height = int(rectangle.getHeight());
 
-    ofPixels renderPixels;
-    renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
-
     auto startAtTime = ofGetElapsedTimeMillis();
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
+    int x = 0;
+    int y = 0;
+
+    for (auto line: image->getPixels().getLines()) {
+        for (auto pixel: line.getPixels()) {
             glm::vec3 P;
             glm::vec3 w;
+
             // Find the ray through (x, y) and the center of projection
             camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
-            renderPixels.setColor(x, y, L_i(ofxRTRay(P, w)));
+            auto color = L_i(ofxRTRay(P, w));
+            pixel[0] = color.r;
+            pixel[1] = color.g;
+            pixel[2] = color.b;
+            //pixel[3] = color.a; this is just needed when you are using images allocated with OF_IMAGE_COLOR_ALPHA
+            x++;
         }
+        y++;
+        x = 0;
     }
 
-    image->setFromPixels(renderPixels);
+    image->update();
     displayTime(ofGetElapsedTimeMillis() - startAtTime);
 }
 

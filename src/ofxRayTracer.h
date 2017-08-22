@@ -5,6 +5,7 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofxRTRay.h"
 #include "ofxRTConst.h"
+//#include "tbb/parallel_for.h"
 
 // It takes a primary ray, it intersect it with a scene and it return a pointer to a surface element.
 // A surface element (“surfel”) [Pfister2000Surfels] contains the intersection position, normal, and material information
@@ -19,6 +20,7 @@ public:
     void setup(const vector<of3dPrimitive>& primitives, const vector<ofMaterial>& materials,const vector<ofLight>& lights);
     //iterates overall pixels calling traceRay
     void traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image);
+    void parallelFor( ofxRTPinholeCamera& camera, ofRectangle& rectangle );
 protected:
     vector<ofLight> lights;
     vector<of3dPrimitive> primitives;

@@ -5,7 +5,7 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofxRTRay.h"
 #include "ofxRTConst.h"
-//#include "tbb/parallel_for.h"
+#include "parallel_for.h"
 
 // It takes a primary ray, it intersect it with a scene and it return a pointer to a surface element.
 // A surface element (“surfel”) [Pfister2000Surfels] contains the intersection position, normal, and material information

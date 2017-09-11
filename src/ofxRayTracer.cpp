@@ -21,29 +21,25 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     const int height = int(rectangle.getHeight());
 
     auto startAtTime = ofGetElapsedTimeMillis();
-    int x = 0;
-    int y = 0;
-    //auto container = image->getPixels().getLines();
-    //auto pixels = image->getPixels();
-    //pixels.getLines(<#size_t first#>, <#size_t numLines#>)
+    ofPixels_ <unsigned char>pixels = image->getPixels();
 
-
-    parallel_for( tbb::blocked_range<size_t>(0,image->getPixels().getHeight()),
+    parallel_for( tbb::blocked_range<size_t>(0,pixels.getHeight()),
                  [=](const tbb::blocked_range<size_t>& r) {
-                     for(auto line: image->getPixels().getLines(r.begin(), r.end() - r.begin())) {
+                     for(auto line: pixels.getConstLines(r.begin(), r.end() - r.begin())) {
                          auto y = line.getLineNum();
                          auto x = 0;
-                         for (auto pixel: line.getPixels()) {
+                         for (auto &pixel: line.getPixels()) {
                              glm::vec3 P;
                              glm::vec3 w;
 
                              // Find the ray through (x, y) and the center of projection
                              camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
                              auto color = L_i(ofxRTRay(P, w));
-                             pixel[0] = color.r;
-                             pixel[1] = color.g;
-                             pixel[2] = color.b;
-                             pixel[3] = color.a;
+                             renderPixels.setColor(x,y,color);
+//                             pixel[0] = color.r;
+//                             pixel[1] = color.g;
+//                             pixel[2] = color.b;
+//                             pixel[3] = color.a;
                              x++;
                          }
                      }

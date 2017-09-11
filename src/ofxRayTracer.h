@@ -40,4 +40,6 @@ protected:
     ofFloatColor getColor(const ofMeshFace& face, int indexMeshes) const;
     void displayTime(uint64_t ellapsed) const;
 
+    ofPixels renderPixels;
+
 };

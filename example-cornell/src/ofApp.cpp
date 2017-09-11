@@ -9,38 +9,25 @@ void ofApp::setup(){
     ofEnableDepthTest();
 
     modelCornell.loadModel("CornellBox-Original.obj", 20);
-    modelTeapot.loadModel("teapot/teapot.obj", 20);
-
     // set up a scene
     centerOfTheScene.setPosition(0, 0, 0);
+    // set the lights
     ofLight light;
     light.setPointLight();
+    light.setPosition(0, +0.5, -3.0);
+    lights.push_back(light);
+    // set the materials used in the debug view
     material.setEmissiveColor(ofFloatColor::red);
     lightDebugColor.setEmissiveColor(ofFloatColor::blue);
 
-    if (showCube) {
-        light.setPosition(-10, 10, -10);
-        int side = 12;
-        box.set(side);
-        box.setParent(centerOfTheScene);
-        centerOfTheScene.move(0, 0, -32);
-        primitives.push_back(box);
-    } else if (showCornell){
-        MeshHelper::readModelAndGetPrimitives(modelCornell, primitives, centerOfTheScene);
-        centerOfTheScene.move(0, -1, -3);
-        light.setPosition(0, +0.5, -3.0);
-    } else {
-        MeshHelper::readModelAndGetPrimitives(modelTeapot, primitives, centerOfTheScene);
-        centerOfTheScene.move(0, -40, -132);
-        light.setPosition(-50, 50, -50);
-    }
-
-    lights.push_back(light);
-
-    vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600"};
-    availableResolution = prepareResolutions();
+    // read the models and fullfill the primitives and the materials vectors
+    ofxRTMeshHelper::getPrimitivesAndMaterials(modelCornell, primitives, materials,centerOfTheScene);
+    // position the primitives
+    centerOfTheScene.move(0, -1, -3);
 
     // instantiate and position the gui //
+    vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600"};
+    availableResolution = prepareResolutions();
     gui = new ofxDatGui( ofxDatGuiAnchor::TOP_RIGHT );
     gui->setAutoDraw(false);
     gui->addTextInput("message", "Ray Casting");
@@ -50,15 +37,14 @@ void ofApp::setup(){
     gui->onDropdownEvent(this, &ofApp::onResolutionEvent);
     gui->onButtonEvent(this, &ofApp::onRenderEvent);
     gui->onSliderEvent(this, &ofApp::onIndRaysEvent);
-
-    image = initImage(160, 100);
 }
 
 void ofApp::startRender(guiOptions options){
-    PinholeCamera camera;
+    ofxRTPinholeCamera camera;
+    rayTracer.setup(primitives, materials, lights);
     image = initImage(options.resolution.width, options.resolution.height);
-    RayCaster rayCaster = RayCaster(primitives, lights);
-    rayCaster.traceImage(camera, image);
+    auto rect = ofRectangle(0, 0, options.resolution.width, options.resolution.height);
+    rayTracer.traceImage(camera, rect, image);
 }
 
 //--------------------------------------------------------------
@@ -68,41 +54,27 @@ void ofApp::draw(){
         lights[0].enable();
         lightDebugColor.begin();
         for(auto l:lights) {
-            //l.draw();
             auto pos = l.getGlobalPosition();
             ofDrawSphere(pos.x, pos.y, pos.z, 0.2);
         }
         lightDebugColor.end();
-        if (showCube) {
-            material.begin();
-            box.draw();
-            material.end();
-        } else {
-            material.begin();
-            for(of3dPrimitive primitive: primitives){
-                primitive.draw();
-            }
-            material.end();
-        };
+        material.begin();
+        for(of3dPrimitive primitive: primitives){
+            primitive.draw();
+        }
+        material.end();
         lights[0].disable();
         ofDrawAxis(100);
         cam.end();
     } else {
-        glDisable(GL_COLOR_MATERIAL);
-        image->draw(10,10, 640, 400);
+        if (image && image->isAllocated()) {
+            image->draw(10,10, 640, 400);
+        }
         ofDisableDepthTest();
         gui->draw();
         ofEnableDepthTest();
     }
-
-
     ofDrawBitmapString(ofToString(ofGetFrameRate(),0), 20, 20);
-}
-
-shared_ptr<ofImage> ofApp::initImage(int _width, int _height){
-    shared_ptr<ofImage> img = std::make_shared<ofImage>();
-    img->allocate(_width, _height, OF_IMAGE_COLOR);
-    return img;
 }
 
 void ofApp::onResolutionEvent(ofxDatGuiDropdownEvent e){
@@ -117,7 +89,7 @@ void ofApp::onRenderEvent(ofxDatGuiButtonEvent e){
 void ofApp::onIndRaysEvent(ofxDatGuiSliderEvent e){
     options.nIndirectRays = e.target->getValue();
     if (e.target->is("datgui opacity")) gui->setOpacity(e.scale);
-    
+
 }
 
 //--------------------------------------------------------------
@@ -176,7 +148,7 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
@@ -194,3 +166,9 @@ map<int, imgDimension> ofApp::prepareResolutions(){
     avl[4] = large;
     return avl;
 };
+
+shared_ptr<ofImage> ofApp::initImage(int _width, int _height){
+    shared_ptr<ofImage> img = std::make_shared<ofImage>();
+    img->allocate(_width, _height, OF_IMAGE_COLOR);
+    return img;
+}

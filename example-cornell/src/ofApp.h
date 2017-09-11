@@ -2,11 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
-#include "PinholeCamera.h"
+#include "ofxRTMeshHelper.h"
+#include "ofxRayTracer.h"
+#include "ofxRTPinholeCamera.h"
 #include "ofxDatGui.h"
-#include "Surfel.h"
-#include "RayCaster.h"
-#include "MeshHelper.h"
 
 struct imgDimension{
     int width;
@@ -43,30 +42,27 @@ public:
 
 
     void startRender(guiOptions opt);
-    shared_ptr<ofImage> initImage(int width, int height);
-
-    shared_ptr<ofImage> image;
     ofxDatGui* gui;
+    ofxRayTracer rayTracer;
 
-    ofxAssimpModelLoader modelTeapot;
     ofxAssimpModelLoader modelCornell;
     vector<of3dPrimitive> primitives;
+    vector<ofMaterial> materials;
     vector<ofLight>	lights;
     ofNode centerOfTheScene;
     guiOptions options;
 
-    //debug 3dScene
-    ofBoxPrimitive box; //debugging box
-    ofPlanePrimitive plane;
+    //debug 3dScene, this is useful when you have to position the camera
     ofMaterial material;
     ofMaterial lightDebugColor;
     ofEasyCam cam;
     bool show3DScene = false;
-    bool showCube = false;
-    bool showCornell = true;
 
     //gui helpers
     map<int, imgDimension> availableResolution;
     map<int, imgDimension> prepareResolutions();
+
+    shared_ptr<ofImage> image;
+    shared_ptr<ofImage> initImage(int width, int height);
 
 };

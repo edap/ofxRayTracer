@@ -21,11 +21,30 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     const int height = int(rectangle.getHeight());
 
     auto startAtTime = ofGetElapsedTimeMillis();
+// single thread, works. Keep it as reference
+//
+//    ofPixels renderPixels;
+//    renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
+//
+//    for (int y = 0; y < height; ++y) {
+//        for (int x = 0; x < width; ++x) {
+//            glm::vec3 P;
+//            glm::vec3 w;
+//            // Find the ray through (x, y) and the center of projection
+//            camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
+//            renderPixels.setColor(x, y, L_i(ofxRTRay(P, w)));
+//        }
+//    }
+//
+//    image->setFromPixels(renderPixels);
+//    displayTime(ofGetElapsedTimeMillis() - startAtTime);
+
+
     ofPixels_ <unsigned char>pixels = image->getPixels();
 
     parallel_for( tbb::blocked_range<size_t>(0,pixels.getHeight()),
-                 [=](const tbb::blocked_range<size_t>& r) {
-                     for(auto line: pixels.getConstLines(r.begin(), r.end() - r.begin())) {
+                 [&](const tbb::blocked_range<size_t>& r) {
+                     for(auto line: pixels.getLines(r.begin(), r.end() - r.begin())) {
                          auto y = line.getLineNum();
                          auto x = 0;
                          for (auto &pixel: line.getPixels()) {
@@ -35,17 +54,15 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
                              // Find the ray through (x, y) and the center of projection
                              camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
                              auto color = L_i(ofxRTRay(P, w));
-                             renderPixels.setColor(x,y,color);
-//                             pixel[0] = color.r;
-//                             pixel[1] = color.g;
-//                             pixel[2] = color.b;
-//                             pixel[3] = color.a;
+                             pixels.setColor(x, y, color);
+                             //pixel[1] = color.g;
+                             //pixel[2] = color.b;
+                             //pixel[3] = color.a;
                              x++;
                          }
                      }
                 }
     );
-
     image->update();
     displayTime(ofGetElapsedTimeMillis() - startAtTime);
 }

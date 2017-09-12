@@ -47,17 +47,18 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
                      for(auto line: pixels.getLines(r.begin(), r.end() - r.begin())) {
                          auto y = line.getLineNum();
                          auto x = 0;
-                         for (auto &pixel: line.getPixels()) {
+                         //for (auto &pixel: line.getPixels()) {
+                         for (auto pixel: line.getPixels()) {
                              glm::vec3 P;
                              glm::vec3 w;
 
                              // Find the ray through (x, y) and the center of projection
                              camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
                              auto color = L_i(ofxRTRay(P, w));
-                             pixels.setColor(x, y, color);
-                             //pixel[1] = color.g;
-                             //pixel[2] = color.b;
-                             //pixel[3] = color.a;
+                             //pixels.setColor(x, y, color);
+                             pixel[1] = color.g;
+                             pixel[2] = color.b;
+                             pixel[3] = color.a;
                              x++;
                          }
                      }

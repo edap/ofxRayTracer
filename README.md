@@ -47,6 +47,6 @@ Have a look at the `example-cornellbox` app
 TODO:
 
 - [x] colors
-- [ ] multithread
+- [x] multithread
 - [ ] indirect rays
 

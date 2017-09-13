@@ -5,10 +5,14 @@ A Ray Tracer in openFrameworks, work in progress
 
 As I've said WIP ;)
 
+### Requirements.
+You need to install tbb. On MacOS, follow this [answer on SO](https://stackoverflow.com/questions/45884514/what-are-xcode-8-environment-variables-to-run-intel-threading-building-blocks)
+
 This ray tracer implementation was written as exercise for this [online course](http://graphicscodex.com/projects/rays/index.html), course prepared by prof. Morgan McGuire
 
 
 It is still incomplete and it is intended for personal use, WIP. It provides a way to load an `.obj` file through the `ofxAssimpModelLoader` and render it. If you want to try it out, that's how you set up a scene, loading the model and you putting the meshes in a `vector<Primitives>`
+
 
 ```cpp
 shared_ptr<ofImage> image;

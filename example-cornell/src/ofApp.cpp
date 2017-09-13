@@ -176,6 +176,6 @@ map<int, imgDimension> ofApp::prepareResolutions(){
 
 shared_ptr<ofImage> ofApp::initImage(int _width, int _height){
     shared_ptr<ofImage> img = std::make_shared<ofImage>();
-    img->allocate(_width, _height, OF_IMAGE_COLOR);
+    img->allocate(_width, _height, OF_IMAGE_COLOR_ALPHA);
     return img;
 }

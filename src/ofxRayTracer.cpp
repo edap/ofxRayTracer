@@ -24,7 +24,7 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     if (!parallel){
         // single thread, works. Keep it as reference
         ofPixels renderPixels;
-        renderPixels.allocate(width, height, OF_IMAGE_COLOR);
+        renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
     
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
@@ -46,19 +46,21 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
                              int y = line.getLineNum();
                              int x = 0;
                              for (ofPixels::Pixel pixel: line.getPixels()) {
-//                                 cout <<"x y:"<< endl;
-//                                 cout << x << endl;
-//                                 cout << y << endl;
+//                               cout <<"x y:"<< endl;
+//                               cout << x << endl;
+//                               cout << y << endl;
                                  glm::vec3 P;
                                  glm::vec3 w;
 
                                  // Find the ray through (x, y) and the center of projection
-                                 camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
+                                 cout << line.getLineNum() << endl;
+                                 camera.getPrimaryRay(float(x) + 0.5f, float(line.getLineNum()) + 0.5f, width, height, P, w);
                                  ofColor color = L_i(ofxRTRay(P, w));
-                                 pixels.setColor(x, y, color);
-                                 //pixel[1] = color.g;
-                                 //pixel[2] = color.b;
-                                 //pixel[3] = color.a;
+                                 //pixels.setColor(x, y, color);
+                                 pixel[0] = color.r;
+                                 pixel[1] = color.g;
+                                 pixel[2] = color.b;
+                                 pixel[3] = color.a;
                                  x++;
                              }
                          }

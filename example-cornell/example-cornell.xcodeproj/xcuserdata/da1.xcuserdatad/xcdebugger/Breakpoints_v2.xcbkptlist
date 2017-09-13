@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ofxRayTracer.cpp"
-            timestampString = "526985315.537359"
+            timestampString = "526987983.789588"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "48"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ofxRayTracer.cpp"
-            timestampString = "526985315.537359"
+            timestampString = "526987983.789588"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
             landmarkName = "ofxRayTracer::traceImage(const ofxRTPinholeCamera&amp; camera, ofRectangle&amp; rectangle, shared_ptr&lt;ofImage&gt;&amp; image, bool&amp; parallel)"
             landmarkType = "7">
          </BreakpointContent>

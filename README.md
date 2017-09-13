@@ -4,7 +4,8 @@ A Ray Tracer in openFrameworks, work in progress
 ![current](img/current.jpg)
 
 As I've said WIP ;)
-This ray tracer implementation was written as exercise for this [online course](http://graphicscodex.com/projects/rays/index.html), course prepared by prof. Morgan McGuire
+This ray tracer implementation was written as exercise for this [online course](http://graphicscodex.com/projects/rays/index.html), course prepared by prof. Morgan McGuire.
+
 It is still incomplete and it is intended for personal use, WIP. It provides a way to load an `.obj` file through the `ofxAssimpModelLoader` and render it.
 
 ### Requirements.

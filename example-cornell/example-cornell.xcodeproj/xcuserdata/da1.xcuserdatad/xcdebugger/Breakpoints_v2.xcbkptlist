@@ -10,12 +10,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../src/ofxRayTracer.cpp"
-            timestampString = "526853617.214101"
+            timestampString = "526985315.537359"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "ofxRayTracer::traceImage(const ofxRTPinholeCamera&amp; camera, ofRectangle&amp; rectangle, shared_ptr&lt;ofImage&gt;&amp; image)"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "ofxRayTracer::traceImage(const ofxRTPinholeCamera&amp; camera, ofRectangle&amp; rectangle, shared_ptr&lt;ofImage&gt;&amp; image, bool&amp; parallel)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../src/ofxRayTracer.cpp"
+            timestampString = "526985315.537359"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "ofxRayTracer::traceImage(const ofxRTPinholeCamera&amp; camera, ofRectangle&amp; rectangle, shared_ptr&lt;ofImage&gt;&amp; image, bool&amp; parallel)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

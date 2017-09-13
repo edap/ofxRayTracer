@@ -39,11 +39,13 @@ public:
     void onResolutionEvent(ofxDatGuiDropdownEvent e);
     void onRenderEvent(ofxDatGuiButtonEvent e);
     void onIndRaysEvent(ofxDatGuiSliderEvent e);
+    void onToggleEvent(ofxDatGuiToggleEvent e);
 
 
     void startRender(guiOptions opt);
     ofxDatGui* gui;
     ofxRayTracer rayTracer;
+    bool runInParallel = false;
 
     ofxAssimpModelLoader modelCornell;
     vector<of3dPrimitive> primitives;

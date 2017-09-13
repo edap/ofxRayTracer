@@ -33,9 +33,11 @@ void ofApp::setup(){
     gui->addTextInput("message", "Ray Casting");
     gui->addDropdown("Resolution", options);
     gui->addSlider("indirect rays per pixel", 0, 2048);
+    gui->addToggle("run in parallel", runInParallel);
     gui->addButton("start render");
     gui->onDropdownEvent(this, &ofApp::onResolutionEvent);
     gui->onButtonEvent(this, &ofApp::onRenderEvent);
+    gui->onToggleEvent(this, &ofApp::onToggleEvent);
     gui->onSliderEvent(this, &ofApp::onIndRaysEvent);
 }
 
@@ -44,7 +46,8 @@ void ofApp::startRender(guiOptions options){
     rayTracer.setup(primitives, materials, lights);
     image = initImage(options.resolution.width, options.resolution.height);
     auto rect = ofRectangle(0, 0, options.resolution.width, options.resolution.height);
-    rayTracer.traceImage(camera, rect, image);
+    cout << runInParallel << endl;
+    rayTracer.traceImage(camera, rect, image, runInParallel);
 }
 
 //--------------------------------------------------------------
@@ -74,12 +77,16 @@ void ofApp::draw(){
         gui->draw();
         ofEnableDepthTest();
     }
-    ofDrawBitmapString(ofToString(ofGetFrameRate(),0), 20, 20);
+    //ofDrawBitmapString(ofToString(ofGetFrameRate(),0), 20, 20);
 }
 
 void ofApp::onResolutionEvent(ofxDatGuiDropdownEvent e){
     options.resolution = availableResolution[int(e.child)];
 }
+
+void ofApp::onToggleEvent(ofxDatGuiToggleEvent e){
+    runInParallel = e.checked;
+};
 
 void ofApp::onRenderEvent(ofxDatGuiButtonEvent e){
     cout << e.target << endl;

@@ -633,16 +633,21 @@
 					../../../addons/ofxDatGui/src/libs/ofxSmartFont,
 					../../../addons/ofxDatGui/src/themes,
 					../../../addons/ofxRayTracer/src,
+					/usr/local/Cellar/tbb/2017_U7/include,
 				);
 				ICON = "$(ICON_NAME_RELEASE)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";
 				INSTALL_PATH = /Applications;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/tbb/2017_U7/lib,
+				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
 					"$(OF_CORE_LIBS)",
 					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a,
+					"-ltbb",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -789,40 +794,22 @@
 					../../../addons/ofxDatGui/src/libs,
 					../../../addons/ofxDatGui/src/libs/ofxSmartFont,
 					../../../addons/ofxDatGui/src/themes,
-					/usr/local/include/tbb,
-					../../../addons/ofxRayTracer/src,
-				);
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(OF_CORE_HEADERS)",
-					src,
-					../../../addons/ofxAssimpModelLoader/libs,
-					../../../addons/ofxAssimpModelLoader/libs/assimp,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/include,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/include/assimp,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/include/assimp/Compiler,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/lib,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/emscripten,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/license,
-					../../../addons/ofxAssimpModelLoader/src,
-					../../../addons/ofxDatGui/src,
-					../../../addons/ofxDatGui/src/components,
-					../../../addons/ofxDatGui/src/core,
-					../../../addons/ofxDatGui/src/libs,
-					../../../addons/ofxDatGui/src/libs/ofxSmartFont,
-					../../../addons/ofxDatGui/src/themes,
-					/usr/local/include/tbb,
+					/usr/local/Cellar/tbb/2017_U7/include,
 					../../../addons/ofxRayTracer/src,
 				);
 				ICON = "$(ICON_NAME_DEBUG)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";
 				INSTALL_PATH = /Applications;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/tbb/2017_U7/lib,
+				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
 					"$(OF_CORE_LIBS)",
 					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a,
+					"-ltbb",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
 				WRAPPER_EXTENSION = app;
@@ -857,40 +844,22 @@
 					../../../addons/ofxDatGui/src/libs,
 					../../../addons/ofxDatGui/src/libs/ofxSmartFont,
 					../../../addons/ofxDatGui/src/themes,
+					/usr/local/Cellar/tbb/2017_U7/include,
 					../../../addons/ofxRayTracer/src,
-					/usr/local/include/tbb,
-				);
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(OF_CORE_HEADERS)",
-					src,
-					../../../addons/ofxAssimpModelLoader/libs,
-					../../../addons/ofxAssimpModelLoader/libs/assimp,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/include,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/include/assimp,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/include/assimp/Compiler,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/lib,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/emscripten,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx,
-					../../../addons/ofxAssimpModelLoader/libs/assimp/license,
-					../../../addons/ofxAssimpModelLoader/src,
-					../../../addons/ofxDatGui/src,
-					../../../addons/ofxDatGui/src/components,
-					../../../addons/ofxDatGui/src/core,
-					../../../addons/ofxDatGui/src/libs,
-					../../../addons/ofxDatGui/src/libs/ofxSmartFont,
-					../../../addons/ofxDatGui/src/themes,
-					../../../addons/ofxRayTracer/src,
-					/usr/local/include/tbb,
 				);
 				ICON = "$(ICON_NAME_RELEASE)";
 				ICON_FILE = "$(ICON_FILE_PATH)$(ICON)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";
 				INSTALL_PATH = /Applications;
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/tbb/2017_U7/lib,
+				);
 				OTHER_LDFLAGS = (
 					"$(OF_CORE_FRAMEWORKS)",
 					"$(OF_CORE_LIBS)",
 					../../../addons/ofxAssimpModelLoader/libs/assimp/lib/osx/assimp.a,
+					"-ltbb",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

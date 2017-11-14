@@ -13,8 +13,7 @@ You need to install tbb. On MacOS, follow this [answer on SO](https://stackoverf
 
 ### Usage
 
- If you want to try it out, that's how you set up a scene, loading the model and you putting the meshes in a `vector<Primitives>`
-
+ If you want to try it out, that's how you set up a scene
 
 ```cpp
 shared_ptr<ofImage> image;

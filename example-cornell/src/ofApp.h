@@ -45,6 +45,8 @@ public:
     void startRender(guiOptions opt);
     ofxDatGui* gui;
     ofxRayTracer rayTracer;
+    // https://forum.openframeworks.cc/t/ray-tracer-implementation/27283/55
+    // this problem is still not fixed
     bool runInParallel = false;
 
     ofxAssimpModelLoader modelCornell;

@@ -9,23 +9,14 @@ void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<
 };
 
 // C++ Ray Casting implementation following http://graphicscodex.com
-
-void ofxRayTracer::parallelFor( ofxRTPinholeCamera& camera, ofRectangle& rectangle )
-{
-    //tbb::parallel_for(camera, rectangle);
-}
-
-
 void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image, bool& parallel){
     const int width = int(rectangle.getWidth());
     const int height = int(rectangle.getHeight());
-
     auto startAtTime = ofGetElapsedTimeMillis();
+    ofPixels renderPixels;
+    renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
+
     if (!parallel){
-        // single thread, works. Keep it as reference
-        ofPixels renderPixels;
-        renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
-    
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 glm::vec3 P;
@@ -34,40 +25,21 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
                 camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
                 renderPixels.setColor(x, y, L_i(ofxRTRay(P, w)));
             }
-        }
-    
-        image->setFromPixels(renderPixels);
+        };
     } else {
-        ofPixels & pixels = image->getPixels();
-
-        parallel_for( tbb::blocked_range<size_t>(0,pixels.getHeight()),
-                     [&](const tbb::blocked_range<size_t>& r) {
-                         for(ofPixels::Line line: pixels.getLines(r.begin(), r.end() - r.begin())) {
-                             int y = line.getLineNum();
-                             int x = 0;
-                             for (ofPixels::Pixel pixel: line.getPixels()) {
-//                               cout <<"x y:"<< endl;
-//                               cout << x << endl;
-//                               cout << y << endl;
-                                 glm::vec3 P;
-                                 glm::vec3 w;
-
-                                 // Find the ray through (x, y) and the center of projection
-                                 cout << line.getLineNum() << endl;
-                                 camera.getPrimaryRay(float(x) + 0.5f, float(line.getLineNum()) + 0.5f, width, height, P, w);
-                                 ofColor color = L_i(ofxRTRay(P, w));
-                                 //pixels.setColor(x, y, color);
-                                 pixel[0] = color.r;
-                                 pixel[1] = color.g;
-                                 pixel[2] = color.b;
-                                 pixel[3] = color.a;
-                                 x++;
-                             }
-                         }
-                     }
-        );
-        image->update();
+        tbb::parallel_for(0, height,
+                          [&] (int y)
+                          {
+                              for (int x = 0; x < width; ++x) {
+                                  glm::vec3 P;
+                                  glm::vec3 w;
+                                  // Find the ray through (x, y) and the center of projection
+                                  camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
+                                  renderPixels.setColor(x, y, L_i(ofxRTRay(P, w)));
+                              }
+                          });
     }
+    image->setFromPixels(renderPixels);
     displayTime(ofGetElapsedTimeMillis() - startAtTime);
 }
 

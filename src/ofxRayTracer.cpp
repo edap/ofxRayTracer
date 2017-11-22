@@ -122,8 +122,12 @@ ofColor ofxRayTracer::L_0(const shared_ptr<ofxRTSurfel>& surfelY, const glm::vec
  I changed the frame of reference by advancing one step closer to the light along a
  transport path. As in all equations so far, X is the point at which radiance is being
  scattered and Y is the next node closer to the light on the light transport path.
+ 
+ TODO Here you should implement the indirect rays
+ http://graphicscodex.com/projects/rays/index.html
 */
 ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surfelX,const glm::vec3 wo) const{
+    // wo e' la direzione che orienta la mia semisfera
     glm::vec3 Light = surfelX->emittedRadiance(wo);
     for (int i = 0; i<lights.size(); i++) {
         glm::vec3 lightPos = lights[i].getGlobalPosition();
@@ -140,14 +144,31 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
             float lightPower = lights[i].getDiffuseColor().getBrightness() * 30;
             float biradiance = lightPower / (4 * PI * sqrt(distanceToLight));
 
+
+
+            int n_rays = 100;
+            for(int i = 0; i < n_rays; i++){
+                glm::vec3 rdir = getRandomDir();
+                float acos = glm::dot(wi, rdir);
+                if(acos > 0){
+
+                    float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
+                    glm::vec3 finiteScatteringDensity = surfelX->finiteScatteringDensity(rdir, wo);
+                    Light +=
+                    vecAmbientLight +
+                    biradiance/(n_rays/2) * // comment out this when debugging
+                    finiteScatteringDensity *
+                    glm::vec3( dProd ) * color;
+
+
+                }
+                
+            }
+
+
+            // il loop va qui, devi dividere biradiance per il numero di raggi
             //lambertian light
-            float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
-            glm::vec3 finiteScatteringDensity = surfelX->finiteScatteringDensity(wi, wo);
-            Light +=
-                vecAmbientLight +
-                biradiance * // comment out this when debugging
-                finiteScatteringDensity *
-                glm::vec3( dProd ) * color;
+
         }
     }
     return ofFloatColor(Light.x, Light.y, Light.z);
@@ -218,5 +239,26 @@ void ofxRayTracer::displayTime(uint64_t ellapsed) const {
     cout << str << endl;
 }
 
+// http://corysimon.github.io/articles/uniformdistn-on-sphere/
+void ofxRayTracer::cosineSampleHemisphere(int n_rays, glm::vec3 dir, glm::vec3 pos){
+    int lenght = 20;
+    for(int i = 0; i < n_rays; i++){
+        glm::vec3 rdir = getRandomDir();
+
+        float acos = glm::dot(dir, rdir);
+        glm::vec3 spos = pos + rdir * lenght;
+        if(acos > 0){
+            ofDrawSphere(spos, 1);
+        }
+
+    }
+}
+
+glm::vec3 ofxRayTracer::getRandomDir() const{
+    float x = ofRandom(-1.0f, 1.0f);
+    float y = ofRandom(-1.0f, 1.0f);
+    float z = ofRandom(-1.0f, 1.0f);
+    return glm::normalize(glm::vec3(x, y, z));
+}
 
 

@@ -40,4 +40,7 @@ protected:
     void displayTime(uint64_t ellapsed) const;
 
 
+    void cosineSampleHemisphere(int n_rays, glm::vec3 dir, glm::vec3 pos);
+    glm::vec3 getRandomDir() const;
+
 };

@@ -43,18 +43,15 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     displayTime(ofGetElapsedTimeMillis() - startAtTime);
 }
 
-// Debugging implementation that computes white if there is any surface on this ray and black when there is not.
-// This method return the incoming light for X. The radiance need to be calculated properly, for now it is just black and white,
-// In the future it will be
-/*
-from the book: The first one is easy: iterate over the lights and multiply three values: the biradiance from the light, the value of the scattering distribution function, and the cosine of the angle of incidence (a dot product).
-*/
 
+// This method return the incoming light for X.
 ofColor ofxRayTracer::L_i(const ofxRTRay& ray, const int n_rays) const{
     // for all the triangles in a mesh
     // Find the first intersection (and the closest!) with the scene
     const shared_ptr<ofxRTSurfel>& surfelY = findFirstIntersectionWithThePrimitives(ray);
     if (surfelY) {
+        // Debugging implementation that computes white if there is any surface on this ray and black when there is not.
+        // return ofColor(255,255,255);
         return L_0(surfelY, -ray.direction, n_rays);
     } else {
         return ofColor(0,0,0);
@@ -122,12 +119,8 @@ ofColor ofxRayTracer::L_0(const shared_ptr<ofxRTSurfel>& surfelY, const glm::vec
  I changed the frame of reference by advancing one step closer to the light along a
  transport path. As in all equations so far, X is the point at which radiance is being
  scattered and Y is the next node closer to the light on the light transport path.
- 
- TODO Here you should implement the indirect rays
- http://graphicscodex.com/projects/rays/index.html
 */
 ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surfelX,const glm::vec3 wo, const int n_rays) const{
-    // wo e' la direzione che orienta la mia semisfera
     glm::vec3 Light = surfelX->emittedRadiance(wo);
     for (int i = 0; i<lights.size(); i++) {
         glm::vec3 lightPos = lights[i].getGlobalPosition();
@@ -137,13 +130,14 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
 
         if (visible(surfelX->getPosition(), wi, distanceToLight)) {
             ofFloatColor ambientLight = lights[i].getAmbientColor();
-            glm::vec3 vecAmbientLight = glm::vec3(ambientLight.r, ambientLight.r, ambientLight.b);
+            glm::vec3 vecAmbientLight = glm::vec3(ambientLight.r, ambientLight.g, ambientLight.b);
             glm::vec3 color = surfelX->getColor();
             // light power is not implemented in ofLight,
             // I use a getDiffuseColor().getBrightness() for this
             float lightPower = lights[i].getDiffuseColor().getBrightness() * 30;
             float biradiance = lightPower / (4 * PI * sqrt(distanceToLight));
 
+            //implement indirect rays only if the number of indirect rays is bigger than zero
             if (n_rays > 0) {
                 for(int i = 0; i < n_rays; i++){
                     glm::vec3 rdir = getRandomDir();
@@ -167,6 +161,8 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
                 finiteScatteringDensity *
                 glm::vec3( dProd ) * color;
             }
+        }else{
+            //shadow?
         }
     }
     return ofFloatColor(Light.x, Light.y, Light.z);

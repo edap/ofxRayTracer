@@ -167,7 +167,7 @@ map<int, imgDimension> ofApp::prepareResolutions(){
     imgDimension medium; medium.width = 320; medium.height = 200;
     imgDimension large; large.width = 640; large.height = 400;
     imgDimension big; big.width = 800; big.height = 600;
-    imgDimension veryBig; big.width = 1280; big.height = 768;
+    imgDimension veryBig; veryBig.width = 1024; veryBig.height = 640;
     avl[0] = small;
     avl[1] = normal;
     avl[2] = medium;

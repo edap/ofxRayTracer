@@ -26,7 +26,7 @@ void ofApp::setup(){
     centerOfTheScene.move(0, -1, -3);
 
     // instantiate and position the gui //
-    vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600"};
+    vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600", "1280x768"};
     availableResolution = prepareResolutions();
     gui = new ofxDatGui( ofxDatGuiAnchor::TOP_RIGHT );
     gui->setAutoDraw(false);
@@ -46,8 +46,9 @@ void ofApp::startRender(guiOptions options){
     rayTracer.setup(primitives, materials, lights);
     image = initImage(options.resolution.width, options.resolution.height);
     auto rect = ofRectangle(0, 0, options.resolution.width, options.resolution.height);
+    int n_rays = ceil(options.nIndirectRays);
     cout << runInParallel << endl;
-    rayTracer.traceImage(camera, rect, image, runInParallel);
+    rayTracer.traceImage(camera, rect, image, runInParallel, n_rays);
 }
 
 //--------------------------------------------------------------
@@ -166,11 +167,13 @@ map<int, imgDimension> ofApp::prepareResolutions(){
     imgDimension medium; medium.width = 320; medium.height = 200;
     imgDimension large; large.width = 640; large.height = 400;
     imgDimension big; big.width = 800; big.height = 600;
+    imgDimension veryBig; big.width = 1280; big.height = 768;
     avl[0] = small;
     avl[1] = normal;
     avl[2] = medium;
-    avl[3] = big;
-    avl[4] = large;
+    avl[3] = large;
+    avl[4] = big;
+    avl[5] = veryBig;
     return avl;
 };
 

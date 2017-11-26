@@ -53,5 +53,8 @@ TODO:
 
 - [x] colors
 - [x] multithread
-- [ ] indirect rays
+- [x] indirect rays
+- [ ] colored shadows
+- [ ] antialiasing
+
 

@@ -8,6 +8,9 @@ void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<
     lights = _lights;
 };
 
+//TEXTURES
+// https://bheisler.github.io/post/writing-raytracer-in-rust-part-3/
+
 // C++ Ray Casting implementation following http://graphicscodex.com
 void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image, bool& parallel, const int& n_rays){
     const int width = int(rectangle.getWidth());
@@ -127,11 +130,17 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
         glm::vec3 offset = lightPos - surfelX->getPosition();
         const float distanceToLight = glm::length(offset);
         glm::vec3 wi = glm::normalize(offset);
+        //ambient and diffuse coeficient https://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
+        float ambient_coeficient = 0.1;
+        float diffuse_coeficient = 1.0 - ambient_coeficient;
+        ofFloatColor ambientLight = lights[i].getAmbientColor();
+        glm::vec3 vecAmbientLight = glm::vec3(ambientLight.r, ambientLight.g, ambientLight.b) * ambient_coeficient;
+        glm::vec3 color = surfelX->getColor();
+
+
 
         if (visible(surfelX->getPosition(), wi, distanceToLight)) {
-            ofFloatColor ambientLight = lights[i].getAmbientColor();
-            glm::vec3 vecAmbientLight = glm::vec3(ambientLight.r, ambientLight.g, ambientLight.b);
-            glm::vec3 color = surfelX->getColor();
+
             // light power is not implemented in ofLight,
             // I use a getDiffuseColor().getBrightness() for this
             float lightPower = lights[i].getDiffuseColor().getBrightness() * 30;
@@ -149,20 +158,30 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
                         vecAmbientLight +
                         biradiance/(n_rays/2) * // comment out this when debugging
                         finiteScatteringDensity *
-                        glm::vec3( dProd ) * color;
+                        glm::vec3( dProd * diffuse_coeficient ) * color;
                     }
                 }
             } else {
+                // capitolo 6
+                // https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/shading-spherical-light
+                // http://www.informit.com/articles/article.aspx?p=2115288&seqNum=4
+
                 float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
                 glm::vec3 finiteScatteringDensity = surfelX->finiteScatteringDensity(wi, wo);
                 Light +=
                 vecAmbientLight +
                 biradiance * // comment out this when debugging
                 finiteScatteringDensity *
-                glm::vec3( dProd ) * color;
+                glm::vec3( dProd * diffuse_coeficient ) * color;
+
             }
         }else{
-            //shadow?
+            float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
+            Light +=
+            vecAmbientLight + glm::vec3( dProd * diffuse_coeficient) * color;
+            //Light = shadowRay(surfelX,wo,n_rays);
+            //shadow
+            // http://graphicscodex.com/projects/rays/index.html cerca "For a shadow ray"
         }
     }
     return ofFloatColor(Light.x, Light.y, Light.z);
@@ -170,6 +189,8 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
 
 bool ofxRayTracer::visible(const glm::vec3& P, const glm::vec3& direction, const float& distance) const{
     const ofxRTRay ray = ofxRTRay(P + direction * CONST_EPSILON, direction);
+
+
     float dist = distance - CONST_EPSILON;
 
     for (const of3dPrimitive& primitive : this->primitives) {
@@ -234,20 +255,6 @@ void ofxRayTracer::displayTime(uint64_t ellapsed) const {
 }
 
 // http://corysimon.github.io/articles/uniformdistn-on-sphere/
-void ofxRayTracer::cosineSampleHemisphere(int n_rays, glm::vec3 dir, glm::vec3 pos){
-    int lenght = 20;
-    for(int i = 0; i < n_rays; i++){
-        glm::vec3 rdir = getRandomDir();
-
-        float acos = glm::dot(dir, rdir);
-        glm::vec3 spos = pos + rdir * lenght;
-        if(acos > 0){
-            ofDrawSphere(spos, 1);
-        }
-
-    }
-}
-
 glm::vec3 ofxRayTracer::getRandomDir() const{
     float x = ofRandom(-1.0f, 1.0f);
     float y = ofRandom(-1.0f, 1.0f);

@@ -17,7 +17,7 @@ public:
     ofxRayTracer();
     // when you will pass a model from assimp,
     // remember this: https://github.com/openframeworks/openFrameworks/issues/2989
-    void setup(const vector<of3dPrimitive>& primitives, const vector<ofMaterial>& materials,const vector<ofLight>& lights);
+    void setup(const vector<of3dPrimitive>& primitives, const vector<ofMaterial>& materials,const vector<ofLight>& lights, const float& _ambientTermBias);
     //iterates overall pixels calling traceRay
     void traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rectangle, shared_ptr<ofImage>& image, bool& parallel, const int& nRays);
 protected:
@@ -40,5 +40,9 @@ protected:
     void displayTime(uint64_t ellapsed) const;
 
     glm::vec3 getRandomDir() const;
+    glm::vec3 getAmbientLight(const glm::vec3& color) const;
+
+    float ambientTerm = 0.3; // TODO, put this in the options
+
 
 };

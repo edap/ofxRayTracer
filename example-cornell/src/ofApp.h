@@ -15,6 +15,7 @@ struct imgDimension{
 struct guiOptions{
     imgDimension resolution;
     int nIndirectRays;
+    float ambientBias;
 };
 
 class ofApp : public ofBaseApp{
@@ -45,10 +46,8 @@ public:
     void startRender(guiOptions opt);
     ofxDatGui* gui;
     ofxRayTracer rayTracer;
-    // https://forum.openframeworks.cc/t/ray-tracer-implementation/27283/55
-    // this problem is still not fixed
     bool runInParallel = false;
-
+    ofParameter<float> ambientBias = 0.2;
     ofxAssimpModelLoader modelCornell;
     vector<of3dPrimitive> primitives;
     vector<ofMaterial> materials;

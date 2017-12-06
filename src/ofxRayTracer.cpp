@@ -2,10 +2,12 @@
 ofxRayTracer::ofxRayTracer(){};
 
 
-void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<ofMaterial>& _materials, const vector<ofLight>& _lights){
+void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<ofMaterial>& _materials, const vector<ofLight>& _lights, const float& _ambientTermBias){
     primitives = _primitives;
     materials = _materials;
     lights = _lights;
+    ambientTerm = _ambientTermBias;
+
 };
 
 //TEXTURES
@@ -130,19 +132,13 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
         glm::vec3 offset = lightPos - surfelX->getPosition();
         const float distanceToLight = glm::length(offset);
         glm::vec3 wi = glm::normalize(offset);
-        //ambient and diffuse coeficient https://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
-        float ambient_coeficient = 0.1;
-        float diffuse_coeficient = 1.0 - ambient_coeficient;
-        ofFloatColor ambientLight = lights[i].getAmbientColor();
-        glm::vec3 vecAmbientLight = glm::vec3(ambientLight.r, ambientLight.g, ambientLight.b) * ambient_coeficient;
         glm::vec3 color = surfelX->getColor();
-
-
+        glm::vec3 vecAmbientLight = getAmbientLight(color);
 
         if (visible(surfelX->getPosition(), wi, distanceToLight)) {
-
             // light power is not implemented in ofLight,
             // I use a getDiffuseColor().getBrightness() for this
+            // TODO. put lightPower in a constant or in the config.
             float lightPower = lights[i].getDiffuseColor().getBrightness() * 30;
             float biradiance = lightPower / (4 * PI * sqrt(distanceToLight));
 
@@ -155,30 +151,25 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
                         float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
                         glm::vec3 finiteScatteringDensity = surfelX->finiteScatteringDensity(rdir, wo);
                         Light +=
-                        vecAmbientLight +
+                        //vecAmbientLight + this is not needed when calculating
+                        // indirect lights because they are already adding enough light
                         biradiance/(n_rays/2) * // comment out this when debugging
                         finiteScatteringDensity *
-                        glm::vec3( dProd * diffuse_coeficient ) * color;
+                        glm::vec3( dProd ) * color;
                     }
                 }
             } else {
-                // capitolo 6
-                // https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/shading-spherical-light
-                // http://www.informit.com/articles/article.aspx?p=2115288&seqNum=4
-
                 float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
                 glm::vec3 finiteScatteringDensity = surfelX->finiteScatteringDensity(wi, wo);
                 Light +=
                 vecAmbientLight +
                 biradiance * // comment out this when debugging
                 finiteScatteringDensity *
-                glm::vec3( dProd * diffuse_coeficient ) * color;
+                glm::vec3( dProd ) * color;
 
             }
         }else{
-            float dProd = abs(glm::dot(wi, surfelX->getGeometricNormal()));
-            Light +=
-            vecAmbientLight + glm::vec3( dProd * diffuse_coeficient) * color;
+            Light += vecAmbientLight ;
             //Light = shadowRay(surfelX,wo,n_rays);
             //shadow
             // http://graphicscodex.com/projects/rays/index.html cerca "For a shadow ray"
@@ -205,7 +196,8 @@ bool ofxRayTracer::visible(const glm::vec3& P, const glm::vec3& direction, const
                                                           baricenter);
             if (intersection) {
                 if (baricenter.z < dist) {
-                    // Ah! This triangle is closer than the light. Shadow
+                    // Ah! This triangle is closer than the light.
+                    // Shadow!
                     return false;
                 }
             }
@@ -261,5 +253,26 @@ glm::vec3 ofxRayTracer::getRandomDir() const{
     float z = ofRandom(-1.0f, 1.0f);
     return glm::normalize(glm::vec3(x, y, z));
 }
+
+// from http://graphicscodex.com/index.php, 5. Ambient Illumination
+// "For example, the shadows created by V(Y,X)=0 are perfectly black.
+// It is common to attempt to minimize the bias of an direct illumination-only
+// approximation by adding an estimate of the missing indirect illumination.
+// An ambient term accounts for this.
+// The ambient term may be constant or a function of the normal to account for
+// directional variation in indirect illumination. The ambient term is obviously
+// another approximation; it cannot capture the richness of the full incident
+// light field."
+// There are two further drawbacks of the ambient term. Because the indirect
+// illumination that it approximates depends on the content of the scene,
+// the ambient term must be adjusted based on heuristics (or typically, manually)
+// based on an understanding of the scene.
+//
+// I went for the ambient term solution, as it was the fastest way to have the color
+// of the material in the shadow
+
+glm::vec3 ofxRayTracer::getAmbientLight(const glm::vec3& color) const{
+    return color * ambientTerm;
+};
 
 

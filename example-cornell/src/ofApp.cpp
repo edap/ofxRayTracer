@@ -29,10 +29,12 @@ void ofApp::setup(){
     vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600", "1280x768"};
     availableResolution = prepareResolutions();
     gui = new ofxDatGui( ofxDatGuiAnchor::TOP_RIGHT );
+    ambientBias.set("Ambient bias", 0.2, 0.1, 0.6);
     gui->setAutoDraw(false);
     gui->addTextInput("message", "Ray Casting");
     gui->addDropdown("Resolution", options);
     gui->addSlider("indirect rays per pixel", 0, 2048);
+    gui->addSlider(ambientBias);
     gui->addToggle("run in parallel", runInParallel);
     gui->addButton("start render");
     gui->onDropdownEvent(this, &ofApp::onResolutionEvent);
@@ -43,7 +45,7 @@ void ofApp::setup(){
 
 void ofApp::startRender(guiOptions options){
     ofxRTPinholeCamera camera;
-    rayTracer.setup(primitives, materials, lights);
+    rayTracer.setup(primitives, materials, lights, options.ambientBias);
     image = initImage(options.resolution.width, options.resolution.height);
     auto rect = ofRectangle(0, 0, options.resolution.width, options.resolution.height);
     int n_rays = ceil(options.nIndirectRays);
@@ -95,10 +97,16 @@ void ofApp::onRenderEvent(ofxDatGuiButtonEvent e){
 }
 
 void ofApp::onIndRaysEvent(ofxDatGuiSliderEvent e){
-    options.nIndirectRays = e.target->getValue();
-    if (e.target->is("datgui opacity")) gui->setOpacity(e.scale);
+    if (e.target->is("Ambient bias")){
+        options.ambientBias = e.target->getValue();
+    }
+
+    if (e.target->is("indirect rays per pixel")){
+        options.nIndirectRays = e.target->getValue();
+    }
 
 }
+
 
 //--------------------------------------------------------------
 void ofApp::update(){

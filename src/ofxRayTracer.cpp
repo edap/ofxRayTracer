@@ -20,15 +20,33 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     auto startAtTime = ofGetElapsedTimeMillis();
     ofPixels renderPixels;
     renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
+    int tot_samples = camera.getSamplesPerPixel();
+
 
     if (!parallel){
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                glm::vec3 P;
-                glm::vec3 w;
-                // Find the ray through (x, y) and the center of projection
-                camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
-                renderPixels.setColor(x, y, L_i(ofxRTRay(P, w), n_rays));
+                glm::vec4 averageColor;
+                for (int sample = 0; sample < tot_samples; sample++){
+
+                    glm::vec3 P;
+                    glm::vec3 w;
+
+                    double xx = x + rand()/(double)RAND_MAX;
+                    double yy = y + rand()/(double)RAND_MAX;
+
+                    // Find the ray through (x, y) and the center of projection
+                    camera.getPrimaryRay(xx + 0.5f, yy + 0.5f, width, height, P, w);
+                    auto color = L_i(ofxRTRay(P, w), n_rays);
+                    averageColor.x += color.r;
+                    averageColor.y += color.g;
+                    averageColor.z += color.b;
+                    averageColor.w += color.a;
+                }
+
+                auto finalCol = averageColor * (1/(double)tot_samples);
+                ofColor finalColor = ofColor(finalCol.r,finalCol.g,finalCol.b,finalCol.a);
+                renderPixels.setColor(x, y, finalColor);
             }
         };
     } else {
@@ -36,11 +54,26 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
                           [&] (int y)
                           {
                               for (int x = 0; x < width; ++x) {
-                                  glm::vec3 P;
-                                  glm::vec3 w;
-                                  // Find the ray through (x, y) and the center of projection
-                                  camera.getPrimaryRay(float(x) + 0.5f, float(y) + 0.5f, width, height, P, w);
-                                  renderPixels.setColor(x, y, L_i(ofxRTRay(P, w), n_rays));
+                                  glm::vec4 averageColor;
+                                  for (int sample = 0; sample < tot_samples; sample++){
+                                      glm::vec3 P;
+                                      glm::vec3 w;
+
+                                      double xx = x + rand()/(double)RAND_MAX;
+                                      double yy = y + rand()/(double)RAND_MAX;
+
+                                      // Find the ray through (x, y) and the center of projection
+                                      camera.getPrimaryRay(xx + 0.5f, yy + 0.5f, width, height, P, w);
+                                      auto color = L_i(ofxRTRay(P, w), n_rays);
+                                      averageColor.x += color.r;
+                                      averageColor.y += color.g;
+                                      averageColor.z += color.b;
+                                      averageColor.w += color.a;
+                                  }
+                                  
+                                  auto finalCol = averageColor * (1/(double)tot_samples);
+                                  ofColor finalColor = ofColor(finalCol.r,finalCol.g,finalCol.b,finalCol.a);
+                                  renderPixels.setColor(x, y, finalColor);
                               }
                           });
     }

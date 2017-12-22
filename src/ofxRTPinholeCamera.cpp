@@ -17,7 +17,7 @@ void ofxRTPinholeCamera::draw(){
 
 // C++ A Camera Model [_rn_camera] from http://graphicscodex.com
 /* x, y, width, and height in pixels; P in meters */
-void ofxRTPinholeCamera::getPrimaryRay(float x, float y, int width, int height, glm::vec3& P, glm::vec3& w) const {
+void ofxRTPinholeCamera::getPrimaryRay(double x, double y, int width, int height, glm::vec3& P, glm::vec3& w) const {
     // Compute the side of a square at $z = -1$ based on our vertical top-to-bottom field of view
     const float side = -2.0f * tan(verticalFieldOfView / 2.0f);
 
@@ -30,4 +30,8 @@ void ofxRTPinholeCamera::getPrimaryRay(float x, float y, int width, int height, 
     glm::vec3 dir = P - centerOfProjection;
     w = glm::normalize(dir);
 }
+
+int ofxRTPinholeCamera::getSamplesPerPixel() const{
+    return total_samples;
+};
 

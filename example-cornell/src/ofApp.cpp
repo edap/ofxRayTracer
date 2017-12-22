@@ -74,7 +74,7 @@ void ofApp::draw(){
         cam.end();
     } else {
         if (image && image->isAllocated()) {
-            image->draw(10,10, 640, 400);
+            image->draw(10,10, 800, 600);
         }
         ofDisableDepthTest();
         gui->draw();

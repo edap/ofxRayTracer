@@ -16,6 +16,7 @@ struct guiOptions{
     imgDimension resolution;
     int nIndirectRays;
     float ambientBias;
+    int samples;
 };
 
 class ofApp : public ofBaseApp{
@@ -39,7 +40,7 @@ public:
 
     void onResolutionEvent(ofxDatGuiDropdownEvent e);
     void onRenderEvent(ofxDatGuiButtonEvent e);
-    void onIndRaysEvent(ofxDatGuiSliderEvent e);
+    void onSliderEvent(ofxDatGuiSliderEvent e);
     void onToggleEvent(ofxDatGuiToggleEvent e);
 
 
@@ -48,6 +49,7 @@ public:
     ofxRayTracer rayTracer;
     bool runInParallel = false;
     ofParameter<float> ambientBias = 0.2;
+    ofParameter<int> samples = 8;
     ofxAssimpModelLoader modelCornell;
     vector<of3dPrimitive> primitives;
     vector<ofMaterial> materials;

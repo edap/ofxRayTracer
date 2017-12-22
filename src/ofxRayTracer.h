@@ -41,8 +41,5 @@ protected:
 
     glm::vec3 getRandomDir() const;
     glm::vec3 getAmbientLight(const glm::vec3& color) const;
-
     float ambientTerm = 0.3; // TODO, put this in the options
-
-
 };

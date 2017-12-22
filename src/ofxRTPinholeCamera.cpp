@@ -35,3 +35,7 @@ int ofxRTPinholeCamera::getSamplesPerPixel() const{
     return total_samples;
 };
 
+void ofxRTPinholeCamera::setSamples(int n_samples){
+    total_samples = n_samples;
+};
+

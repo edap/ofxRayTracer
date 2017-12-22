@@ -1,16 +1,14 @@
 #include "ofxRayTracer.h"
 ofxRayTracer::ofxRayTracer(){};
 
-
 void ofxRayTracer::setup(const vector<of3dPrimitive>& _primitives, const vector<ofMaterial>& _materials, const vector<ofLight>& _lights, const float& _ambientTermBias){
     primitives = _primitives;
     materials = _materials;
     lights = _lights;
     ambientTerm = _ambientTermBias;
-
 };
 
-//TEXTURES
+// TODO, Textures
 // https://bheisler.github.io/post/writing-raytracer-in-rust-part-3/
 
 // C++ Ray Casting implementation following http://graphicscodex.com
@@ -22,13 +20,11 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     renderPixels.allocate(width, height, OF_IMAGE_COLOR_ALPHA);
     int tot_samples = camera.getSamplesPerPixel();
 
-
     if (!parallel){
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 glm::vec4 averageColor;
                 for (int sample = 0; sample < tot_samples; sample++){
-
                     glm::vec3 P;
                     glm::vec3 w;
 
@@ -80,7 +76,6 @@ void ofxRayTracer::traceImage(const ofxRTPinholeCamera& camera, ofRectangle& rec
     image->setFromPixels(renderPixels);
     displayTime(ofGetElapsedTimeMillis() - startAtTime);
 }
-
 
 // This method return the incoming light for X.
 ofColor ofxRayTracer::L_i(const ofxRTRay& ray, const int n_rays) const{
@@ -199,9 +194,8 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
                 biradiance * // comment out this when debugging
                 finiteScatteringDensity *
                 glm::vec3( dProd ) * color;
-
             }
-        }else{
+        } else {
             Light += vecAmbientLight ;
             //Light = shadowRay(surfelX,wo,n_rays);
             //shadow
@@ -213,7 +207,6 @@ ofFloatColor ofxRayTracer::L_scatteredDirect(const shared_ptr<ofxRTSurfel>& surf
 
 bool ofxRayTracer::visible(const glm::vec3& P, const glm::vec3& direction, const float& distance) const{
     const ofxRTRay ray = ofxRTRay(P + direction * CONST_EPSILON, direction);
-
 
     float dist = distance - CONST_EPSILON;
 
@@ -238,7 +231,6 @@ bool ofxRayTracer::visible(const glm::vec3& P, const glm::vec3& direction, const
     }
     return true;
 }
-
 
 /*
  This method takes as argument a ray and the baricentric coordinates and returns

@@ -118,7 +118,7 @@ for(each x and y in the virtual image plane){
 }
 ```
 
-### Long parenthesis about deferred shading
+### About deferred shading
 This pseudocode above refers to what is called a `forward shading`, in contrast to `deferred shading` [def. shading](https://en.wikipedia.org/wiki/Deferred_shading). In my renderer, I have implemented a forward shading.
 
 In a deferred shading, we first save the information about position, normal, color in a buffer, called `G-Buffer`. In a second step we iterate over the G-Buffer and we calculate the shading. The pseudocode will be something like this:
